@@ -38,6 +38,14 @@ class AverageAPIView(views.APIView):
         length_of_memory_elements = len(data)
         for datum in data:
             sum = sum + datum['value']
+        try:
+            average = sum/length_of_memory_elements
+        except Exception as e:
+            return response.Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data = {
+                    'message': 'Length cannot be zero'
+                       })
         average = sum/length_of_memory_elements
         return response.Response( # Renders to content type as requested by the client.
             status=status.HTTP_200_OK,
@@ -53,15 +61,21 @@ class MeanAPIView(views.APIView):
         length_of_memory_elements = len(data)
         for datum in data:
             sum = sum + datum['value']
-        mean = sum/length_of_memory_elements
+        try:
+            average = sum/length_of_memory_elements
+        except Exception as e:
+            return response.Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data = {
+                    'message': 'Length cannot be zero'
+                       })
+        average = sum/length_of_memory_elements
         return response.Response( # Renders to content type as requested by the client.
             status=status.HTTP_200_OK,
             data={
-                'Mean': 'The mean is ' + str(mean),
+                'Average': 'The average is ' + str(average),
             }
         )
-
-
 class StatisticsAPIView(views.APIView):
     def get(self,request):
         data = StatisticsMemory.objects.all().order_by('id').values('value')
